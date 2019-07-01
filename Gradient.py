@@ -7,11 +7,11 @@ def convertIm(fichier):
     image = image.convert('L')
     (x, y) = image.size
     matrice = [[0 for j in range(x)] for i in range(y)]
-    for i in range(x):
+    for i in range(x): 
         for j in range(y):
             matrice[j][i] = image.getpixel((i, j))
     return matrice
-    
+
 
 def gradient(matrice):
     """Retourne une matrice de gradient des valeurs de matrice."""

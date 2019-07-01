@@ -15,4 +15,3 @@ def StressImg1():
             image.putpixel((x, y), (g, b, r))
     #image.show()
     
-Issou = np.vectorize(StressImg1)

@@ -58,7 +58,7 @@ class Batch:
             print(self.bestFunction())
 
 DATAIN = [0, 1, 2, 3, 4, 5, 6]
-EXPECT = [-4, 6, 12, 4, 3, 2, -2]
+EXPECT = [0, 1, 2, 3, 4, 5, 6]
 
 B = Batch(100, 1)
 B.testAll([1], [1])

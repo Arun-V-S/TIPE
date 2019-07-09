@@ -49,7 +49,7 @@ try:
     set_images
 except:
     set_images = ImageData("D:/Documents/Prepa/TIPE/Imagesinfos.csv", transforms.Compose([transforms.ToTensor()]))
-    imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 1, shuffle = True)
+    imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 4, shuffle = True)
     print('Images chargées.')
 
 class Net(nn.Module):
@@ -124,3 +124,21 @@ def saveModel(nom):
 def loadModel(nom):
     net.load_state_dict(torch.load(pathModels + nom))
     net.eval()
+
+def show():
+    activation = {}
+    def get_activation(name):
+        def hook(model, input, output):
+            activation[name] = output.detach()
+        return hook
+
+    net.conv2.register_forward_hook(get_activation('conv2'))
+    data, _ = set_images[0]
+    print(data)
+    output = net(data.unsqueeze(0))
+
+    act = activation['conv2'].squeeze()
+    print(act.size(0))
+    fir, axarr = plt.subplots(act.size(0))
+    for idx in range(act.size(0)):
+        axarr[idx].imshow(act[idx])

@@ -44,18 +44,17 @@ def generate_perlin_noise_2d(shape, res):
 def generate_octaves(shape, freq, pers, oct): #Shape doit être de la forme (x, y, z) où z = 1 (généralement)
     n = np.zeros((shape[0], shape[1]))
     for i in range(oct):
-        print(i)
         res = ((freq ** i), (freq ** i))
-        print(res)
         n += (pers ** i) * generate_perlin_noise_2d(shape, res)
     return n
 
 
 def surface_plot(matrice):
+    global CMAPGRAD
     (X, Y) = np.meshgrid(np.arange(matrice.shape[0]), np.arange(matrice.shape[1]))
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    surf = ax.plot_surface(X, Y, matrice, cmap=CMAPGRAD, rcount=200, ccount = 200, linewidth=0, antialiased=False)
+    surf = ax.plot_surface(X, Y, matrice, cmap = cm.gist_earth, rcount=200, ccount = 200, linewidth=0, antialiased=False)
     ax.grid(False)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -74,6 +73,7 @@ def cmapGradient(points = 100):
         couleur = mp.colors.to_hex(tuple(img[0, int(res * i)]))
         resultat.append((round(i / points, 2), couleur))
     resultat.append((1, mp.colors.to_hex(tuple(img[0, hor - 1]))))
+    print(resultat)
     CMAPGRAD = resultat #LinearSegmentedColormap.from_list('Issou', resultat)
 
 def cmapGradient2(points = 100):
@@ -96,7 +96,7 @@ def cmapGradient2(points = 100):
 
 
 
-cmapGradient2(100)
+"""cmapGradient2(100)"""
 """
 LOL4 = generate_octaves((1024, 1024), 2, 0.4, 8)
 LOL4 = (LOL4 + 1) * 127
@@ -166,7 +166,9 @@ def Vispy(matrice):
 
     canvas.show()
     app.run()
-print("Début de Perlin")
-TEST = generate_octaves((2048, 2048), 2, 0.6, 8)
-print("Début de préparation de l'affichage")
-Vispy(TEST)
+
+def runVispy():
+    print("Début de Perlin")
+    TEST = generate_octaves((2048, 2048), 2, 0.6, 8)
+    print("Début de préparation de l'affichage")
+    Vispy(TEST)

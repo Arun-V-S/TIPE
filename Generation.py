@@ -14,7 +14,7 @@ pathPatch = ABSOLUTE + "/Patch/"
 
 
 SIZE = 32
-NUMBER = 10000
+NUMBER = 50000
 NUMBERPATCHS = 500
 
 ## Génération images normales

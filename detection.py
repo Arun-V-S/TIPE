@@ -19,7 +19,7 @@ pathNormal = ABSOLUTE + "/Images/Normal/"
 pathAltered = ABSOLUTE + "/Images/Altered/"
 pathModels = ABSOLUTE + "/Models/"
 
-NUMBER = 10000
+NUMBER = 50000
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -49,11 +49,11 @@ class ImageData(Dataset):
 
     def __len__(self):
         return len(self.resultats)
-try:
-    set_images
-except:
+def load():
+    global set_images
+    global imagesLoader
     set_images = ImageData("D:/Documents/Prepa/TIPE/Imagesinfos.csv", transforms.Compose([transforms.ToTensor()]))
-    imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 128, shuffle = True, pin_memory=True, num_workers=0)
+    imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 512, shuffle = True, pin_memory=True, num_workers=0)
     print('Images chargées.')
 
 class Net(nn.Module):

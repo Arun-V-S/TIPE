@@ -19,6 +19,10 @@ pathNormal = ABSOLUTE + "/Images/Normal/"
 pathAltered = ABSOLUTE + "/Images/Altered/"
 pathModels = ABSOLUTE + "/Models/"
 
+NUMBER = 10000
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 class ImageData(Dataset):
     def __init__(self, csvtruc, transform = None):
         self.transform = transform
@@ -49,7 +53,7 @@ try:
     set_images
 except:
     set_images = ImageData("D:/Documents/Prepa/TIPE/Imagesinfos.csv", transforms.Compose([transforms.ToTensor()]))
-    imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 4, shuffle = True)
+    imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 128, shuffle = True, pin_memory=True, num_workers=0)
     print('Images chargées.')
 
 class Net(nn.Module):
@@ -75,6 +79,7 @@ class Net(nn.Module):
         return x
 
 net = Net()
+net.to(device, non_blocking=True)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum = 0.9)
 
@@ -82,37 +87,33 @@ def train(number):
     for epoch in range(number):
         running_loss = 0.0
         for i, data in enumerate(imagesLoader, 0):
-            input, expected = data
+            input, expected = data[0].to(device, non_blocking=True), data[1].to(device, non_blocking=True)
             optimizer.zero_grad()
             outputs = net(input)
             loss = criterion(outputs, expected)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
-            if i % 500 == 499:
-                print('Epoch : ' + str(epoch) + ' data : ' + str(i + 1) + ' loss : ' + str(running_loss))
-                running_loss = 0.0
+        print('Epoch : ' + str(epoch) + ' loss : ' + str(running_loss))
         net.epochs += 1
 
 def test(altered, numero):
     if altered:
-        image = cv2.imread(pathAltered + str(numero) + '.png')
+        image = set_images[NUMBER + numero][0].unsqueeze(0).to(device)
     else:
-        image = cv2.imread(pathNormal + str(numero) + '.png')
-    image = image.transpose((2, 0, 1))
-    image = torch.tensor(image).float()
-    image.unsqueeze_(0)
+        image = set_images[numero][0].unsqueeze(0).to(device)
     return net(image)
 
 def testSome(Number):
     totalChaque = Number
+    global NUMBER
     Altered = 0
-    for i in range(Number):
+    for i in np.random.randint(0, NUMBER, size = (Number,)):
         res = test(True, i)
         if res[0][1] > res[0][0]:
             Altered += 1
     Normal = 0
-    for i in range(Number):
+    for i in np.random.randint(0, NUMBER, size = (Number,)):
         res = test(False, i)
         if res[0][1] < res[0][0]:
             Normal += 1
@@ -133,12 +134,11 @@ def show():
         return hook
 
     net.conv2.register_forward_hook(get_activation('conv2'))
-    data, _ = set_images[0]
-    print(data)
+    data = set_images[0][0].to(device, non_blocking=True)
     output = net(data.unsqueeze(0))
 
-    act = activation['conv2'].squeeze()
-    print(act.size(0))
+    act = activation['conv2'].squeeze().cpu()
     fir, axarr = plt.subplots(act.size(0))
     for idx in range(act.size(0)):
         axarr[idx].imshow(act[idx])
+    plt.show()

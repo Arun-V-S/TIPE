@@ -11,10 +11,10 @@ ABSOLUTE = 'D:/Documents/Prepa/TIPE/Images'
 pathNormal = ABSOLUTE + "/Normal/"
 pathAltered = ABSOLUTE + "/Altered/"
 pathPatch = ABSOLUTE + "/Patch/"
+pathImage = ABSOLUTE + '/x128/'
 
-
-SIZE = 32
-NUMBER = 50000
+SIZE = 128
+NUMBER = 200
 NUMBERPATCHS = 500
 
 ## Génération images normales
@@ -25,7 +25,7 @@ def printMatGrad(matrice, nom, couleurs = "gradient.png"):
     n = len(matrice)
     image = Image.new('RGB', (n, n))
     gradient = Image.open(couleurs)
-    lGrad = gradient.size[0] // 2
+    lGrad = gradient.size[0]
     for x in range(n):
         for y in range(n):
             image.putpixel((x, y), gradient.getpixel((map(matrice[x][y], (mini, maxi), (0, lGrad - 1)), 1)) )
@@ -34,7 +34,7 @@ def printMatGrad(matrice, nom, couleurs = "gradient.png"):
 def generate():
     global NUMBER
     for i in range(NUMBER):
-        printMatGrad(generate_octaves((SIZE, SIZE, 1), 2, 0.6, 4), pathNormal + str(i))
+        printMatGrad(generate_octaves((SIZE, SIZE, 1), 2, 0.6, 8), pathImage + str(i))
         if i % 1000 == 0:
             print(i)
 

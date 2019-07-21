@@ -24,12 +24,13 @@ pathPatch = ABSOLUTE + "/Patch/"
 pathImage = ABSOLUTE + '/x128/'
 pathEncode = ABSOLUTE + '/autoencoder/'
 
-batchSize = 128
+batchSize = 512
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 setImages = dSet.ImageFolder(root = pathEncode, transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), ]))
 imagesLoader = torch.utils.data.DataLoader(setImages, batch_size = batchSize, shuffle = True, num_workers=0)
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 
 
 def to_img(x):
@@ -54,7 +55,8 @@ class autoencoder(nn.Module):
             nn.MaxPool2d(2, stride=1),  # b, 8, 2, 2
             nn.Conv2d(8, 3, 3, stride = 3, padding = 1),
             nn.ReLU(True),
-            nn.MaxPool2d(2, stride = 1)
+            nn.MaxPool2d(2, stride = 1),
+            nn.Tanh()
         )
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(3, 8, 3, stride=2),
@@ -182,7 +184,7 @@ for i in range(ROWS):
     sliderFrame = Frame(slidersFrameMaster)
     for j in range(COLUMNS):
         if i * COLUMNS + j < CARACS :
-            SLIDERS.append(Scale(sliderFrame, from_ = - 100, to = 100, orient = VERTICAL, length = SLIDERLENGTH, resolution = 0.1, tickinterval = 0.1, width = 20, variable = VARIABLES[i * COLUMNS + j]).pack(side = LEFT))
+            SLIDERS.append(Scale(sliderFrame, from_ = - 1, to = 1, orient = VERTICAL, length = SLIDERLENGTH, resolution = 0.1, tickinterval = 0.1, width = 20, variable = VARIABLES[i * COLUMNS + j]).pack(side = LEFT))
     sliderFrame.pack()
 
 def lol():

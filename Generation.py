@@ -14,8 +14,8 @@ pathPatch = ABSOLUTE + "/Patch/"
 pathImage = ABSOLUTE + '/x128/'
 pathEncode = ABSOLUTE + '/autoencoder/images/'
 
-SIZE = 128
-NUMBER = 2500
+SIZE = 32
+NUMBER = 10000
 NUMBERPATCHS = 500
 
 ## Génération images normales
@@ -34,8 +34,8 @@ def printMatGrad(matrice, nom, couleurs = "gradient.png"):
 
 def generate():
     global NUMBER
-    for i in range(500, NUMBER):
-        printMatGrad(generate_octaves((SIZE, SIZE, 1), 2, 0.6, 5), pathEncode + str(i))
+    for i in range(NUMBER):
+        printMatGrad(generate_octaves((SIZE, SIZE, 1), 2, 0.6, 3), pathEncode + str(i))
         if i % 100 == 0:
             print(i)
 

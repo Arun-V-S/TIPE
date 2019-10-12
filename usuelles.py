@@ -1,3 +1,5 @@
+import numpy as np
+
 def moyenne(liste):
     """Renvoie la moyenne des éléments de la liste."""
     n = len(liste)
@@ -40,3 +42,36 @@ def indice(element, liste):
         if liste[i] == element:
             return i
     return -1
+
+def npNormalClip(mean, dev, size, clipRange):
+    return np.clip(np.random.normal(mean, dev, size), mini, maxi)
+
+def clipcoord(a, b):
+    """Reclip entre [0; b[."""
+    if a < 0:
+        return 0
+    if a >= b:
+        return b - 1
+    else:
+        return a
+
+def tupleAdd(a, b):
+    if len(a) >= len(b):
+        L = []
+        for i in range(len(b)):
+            L.append(a[i] + b[i])
+        for i in range(len(b), len(a)):
+            L.append(a[i])
+    else:
+        L = []
+        for i in range(len(a)):
+            L.append(a[i] + b[i])
+        for i in range(len(a), len(b)):
+            L.append(b[i])
+    return tuple(L)
+
+def tupleFact(a, fact):
+    L = []
+    for i in range(len(a)):
+        L.append(fact * a[i])
+    return tuple(L)

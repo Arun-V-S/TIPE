@@ -9,6 +9,8 @@ Images/
 data/
 Patch/
 DATAIN/
+Models/
+logs/
 
 # Distribution / packaging
 .Python

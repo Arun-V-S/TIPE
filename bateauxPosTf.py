@@ -40,8 +40,8 @@ pathModels = ABSOLUTE + "/Models/"
 listeBateaux = os.listdir(pathBateaux)
 listeMer = os.listdir(pathMer)
 
-NUMBER = 250
-TOTAL = 300
+NUMBER = 100
+TOTAL = 125
 
 bateauxCsvPos.generateCsv(NUMBER, TOTAL)
 print(".csv généré")
@@ -87,100 +87,86 @@ def load():
     imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 32, shuffle = True, pin_memory=True, num_workers=0)
     print('Images chargées.')
 
+
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.epochs = 0
 
-        self.conv1 = nn.Conv2d(3, 16, 3, 1, 1)
-        self.relu1 = nn.ReLU()
-        self.norm1 = nn.BatchNorm2d(16)
-        self.conv2 = nn.Conv2d(16, 64, 3, 1, 1)
-        self.relu2 = nn.ReLU()
-        self.norm2 = nn.BatchNorm2d(64)
-        self.pool1 = nn.MaxPool2d(2, 2)
+        self.conv = nn.Sequential(
+        nn.Conv2d(3, 16, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(16),
+        nn.Conv2d(16, 64, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(64),
+        nn.MaxPool2d(2, 2),
 
-        self.conv3 = nn.Conv2d(64, 128, 3, 1, 1)
-        self.relu3 = nn.ReLU()
-        self.norm3 = nn.BatchNorm2d(128)
-        self.conv4 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu4 = nn.ReLU()
-        self.norm4 = nn.BatchNorm2d(128)
-        self.pool2 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(64, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv5 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu5 = nn.ReLU()
-        self.norm5 = nn.BatchNorm2d(128)
-        self.pool3 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv6 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu6 = nn.ReLU()
-        self.norm6 = nn.BatchNorm2d(128)
-        self.pool4 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv7 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu7 = nn.ReLU()
-        self.norm7 = nn.BatchNorm2d(128)
-        self.pool5 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv8 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu8 = nn.ReLU()
-        self.norm8 = nn.BatchNorm2d(128)
-        self.pool6 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv9 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu9 = nn.ReLU()
-        self.norm9 = nn.BatchNorm2d(128)
-        self.pool7 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
+        )
 
-        """
-        self.conv9 = nn.Conv2d(64, 128, 3, 1)
-        self.relu9 = nn.LeakyReLU()
-        self.norm9 = nn.BatchNorm2d(128)
-        self.pool7 = nn.MaxPool2d(2, 2)"""
-
-
-        self.lin1 = nn.Linear(1600, 4)
-        self.sigmoid = nn.Sigmoid()
+        self.classifier = nn.Sequential(
+        nn.Linear(2048, 512),
+        nn.ReLU(),
+        nn.Linear(512, 10),
+        nn.ReLU(),
+        nn.Linear(10, 2),
+        nn.Softmax(dim = 1),
+        )
 
     def forward(self, x):
-        x = self.norm1(self.relu1(self.conv1(x)))
-        x = self.norm2(self.relu2(self.conv2(x)))
-        x = self.pool1(x)
+        x = self.conv(x)
 
-        x = self.norm3(self.relu3(self.conv3(x)))
-        x = self.norm4(self.relu4(self.conv4(x)))
-        x = self.pool2(x)
+        x = self.review(x)
 
-        x = self.pool3(self.norm5(self.relu5(self.conv5(x))))
-
-        x = self.pool4(self.norm6(self.relu6(self.conv6(x))))
-
-        x = self.pool5(self.norm7(self.relu7(self.conv7(x))))
-
-        x = self.pool6(self.norm8(self.relu8(self.conv8(x))))
-
-        x = self.pool7(self.norm9(self.relu9(self.conv9(x))))
-
-
-        x = x.view(-1, 1600)
-        x = self.sigmoid(self.lin1(x))
-
+        x = self.classifier(x)
         return x
 
-net = Net()
-net.to(device, non_blocking=True)
-criterion = nn.L1Loss()
-optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
+    def review(self, x):
+        return x.view(-1, 2048)
 
 
+
+
+"""
 for i in enumerate(imagesLoader):
     M = i
 
 I = M[1][0][0].to(device)
 J = net(I.unsqueeze(0))
 print(J.shape)
-
+"""
 
 
 
@@ -289,6 +275,25 @@ def show3():
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
+net = Net()
+
+net.load_state_dict(torch.load(pathModels + 'Tf1'))
+
+for param in net.parameters():
+    param.requires_grad = False
+
+net.classifier = nn.Sequential(
+nn.Linear(2048, 64),
+nn.ReLU(),
+nn.Linear(64, 4),
+nn.Softmax()
+)
+
+
+
+net.to(device, non_blocking=True)
+criterion = nn.L1Loss()
+optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
 
 ##Affichage
 def corrigerStr(chaine):

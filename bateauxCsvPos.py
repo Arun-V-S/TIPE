@@ -12,7 +12,7 @@ pathMer = ABSOLUTE + "/data/MASATI-v2/water"
 NUMBERSHIP = 5 # 1027
 NUMBERWATER = 5 # 1022
 
-def generateCsv(nombre):
+def generateCsv(nombre, total):
     listeBateaux = os.listdir(pathBateaux)
     with open(ABSOLUTE + '/bateauxPos.csv', 'w') as fichier:
         filewriter = csv.writer(fichier, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -28,7 +28,7 @@ def generateCsv(nombre):
             filewriter.writerow([nom + ',' + xmin + ',' + xmax + ',' + ymin + ',' + ymax])
     with open(ABSOLUTE + '/bateauxPosVal.csv', 'w') as fichier:
         filewriter = csv.writer(fichier, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        for i in range(nombre, 1024):
+        for i in range(nombre, total):
             nom = pathBateaux + '/' + listeBateaux[i]
             #filewriter.writerow([pathBateaux + '/' + listeBateaux[i] + ',0'])
             tree = etree.parse(pathXml + '/' + (listeBateaux[i].replace('.png', '.xml')))

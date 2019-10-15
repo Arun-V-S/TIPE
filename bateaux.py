@@ -26,7 +26,7 @@ pathModels = ABSOLUTE + "/Models/"
 listeBateaux = os.listdir(pathBateaux)
 listeMer = os.listdir(pathMer)
 
-NUMBER = 50
+NUMBER = 500
 
 bateauxCsv.generateCsv(NUMBER)
 
@@ -60,7 +60,9 @@ class ImageData(Dataset):
         return len(self.resultats)
 
 set_images = ImageData("D:/Documents/Prepa/TIPE/bateaux.csv", transforms.Compose([transforms.ToTensor(),]))
-imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 4, shuffle = True, pin_memory=True, num_workers=0)
+imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 8, shuffle = True, pin_memory=True, num_workers=0)
+
+print("Images chargées")
 
 def load():
     global set_images
@@ -74,82 +76,68 @@ class Net(nn.Module):
         super(Net, self).__init__()
         self.epochs = 0
 
-        self.conv1 = nn.Conv2d(3, 16, 3, 1, 1)
-        self.relu1 = nn.ReLU()
-        self.norm1 = nn.BatchNorm2d(16)
-        self.conv2 = nn.Conv2d(16, 64, 3, 1, 1)
-        self.relu2 = nn.ReLU()
-        self.norm2 = nn.BatchNorm2d(64)
-        self.pool1 = nn.MaxPool2d(2, 2)
+        self.conv = nn.Sequential(
+        nn.Conv2d(3, 16, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(16),
+        nn.Conv2d(16, 64, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(64),
+        nn.MaxPool2d(2, 2),
 
-        self.conv3 = nn.Conv2d(64, 128, 3, 1, 1)
-        self.relu3 = nn.ReLU()
-        self.norm3 = nn.BatchNorm2d(128)
-        self.conv4 = nn.Conv2d(128, 128, 3, 1, 1)
-        self.relu4 = nn.ReLU()
-        self.norm4 = nn.BatchNorm2d(128)
-        self.pool2 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(64, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv5 = nn.Conv2d(128, 256, 3, 1, 1)
-        self.relu5 = nn.ReLU()
-        self.norm5 = nn.BatchNorm2d(256)
-        self.pool3 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv6 = nn.Conv2d(256, 256, 3, 1, 1)
-        self.relu6 = nn.ReLU()
-        self.norm6 = nn.BatchNorm2d(256)
-        self.pool4 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv7 = nn.Conv2d(256, 256, 3, 1, 1)
-        self.relu7 = nn.ReLU()
-        self.norm7 = nn.BatchNorm2d(256)
-        self.pool5 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv8 = nn.Conv2d(256, 512, 3, 1, 1)
-        self.relu8 = nn.ReLU()
-        self.norm8 = nn.BatchNorm2d(512)
-        self.pool6 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
 
-        self.conv9 = nn.Conv2d(512, 512, 3, 1, 1)
-        self.relu9 = nn.ReLU()
-        self.norm9 = nn.BatchNorm2d(512)
-        self.pool7 = nn.MaxPool2d(2, 2)
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
+        )
 
-
-        self.lin1 = nn.Linear(8192, 512)
-        self.relu10 = nn.ReLU()
-        self.lin2 = nn.Linear(512, 10)
-        self.relu11 = nn.ReLU()
-        self.lin3 = nn.Linear(10, 2)
-        self.lin4 = nn.Softmax(dim = 1)
+        self.classifier = nn.Sequential(
+        nn.Linear(2048, 512),
+        nn.ReLU(),
+        nn.Linear(512, 10),
+        nn.ReLU(),
+        nn.Linear(10, 2),
+        nn.Softmax(dim = 1),
+        )
 
     def forward(self, x):
-        x = self.norm1(self.relu1(self.conv1(x)))
-        x = self.norm2(self.relu2(self.conv2(x)))
-        x = self.pool1(x)
+        x = self.conv(x)
 
-        x = self.norm3(self.relu3(self.conv3(x)))
-        x = self.norm4(self.relu4(self.conv4(x)))
-        x = self.pool2(x)
+        x = self.review(x)
 
-        x = self.pool3(self.norm5(self.relu5(self.conv5(x))))
-
-        x = self.pool4(self.norm6(self.relu6(self.conv6(x))))
-
-        x = self.pool5(self.norm7(self.relu7(self.conv7(x))))
-
-        x = self.pool6(self.norm8(self.relu8(self.conv8(x))))
-
-        x = self.pool7(self.norm9(self.relu9(self.conv9(x))))
-
-
-        x = x.view(-1, 8192)
-        x = self.relu10(self.lin1(x))
-        x = self.lin2(x)
-        x = self.relu11(x)
-        x = self.lin3(x)
-        #x = self.lin4(x)
+        x = self.classifier(x)
         return x
+
+    def review(self, x):
+        return x.view(-1, 2048)
 
 net = Net()
 net.to(device, non_blocking=True)

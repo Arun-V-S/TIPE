@@ -19,6 +19,8 @@ from tkinter import *
 from PIL import Image, ImageTk
 import time
 
+"""Approche avec moins de couches de convolution, pour conserver un critère spatial."""
+
 
 Win = Tk()
 affichage = Frame(Win, width = 512, height = 512)
@@ -40,8 +42,8 @@ pathModels = ABSOLUTE + "/Models/"
 listeBateaux = os.listdir(pathBateaux)
 listeMer = os.listdir(pathMer)
 
-NUMBER = 750
-TOTAL = 800
+NUMBER = 200
+TOTAL = 225
 
 bateauxCsvPos.generateCsv(NUMBER, TOTAL)
 print(".csv généré")
@@ -73,7 +75,7 @@ class ImageData(Dataset):
         return len(self.resultats)
 
 set_images = ImageData("D:/Documents/Prepa/TIPE/bateauxPos.csv", transforms.Compose([transforms.ToTensor(),]))
-imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 8, shuffle = True, pin_memory=True, num_workers=0)
+imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 16, shuffle = True, pin_memory=True, num_workers=0)
 print("Set de train chargé")
 
 set_images_val = ImageData("D:/Documents/Prepa/TIPE/bateauxPosVal.csv", transforms.Compose([transforms.ToTensor(),]))
@@ -86,7 +88,6 @@ def load():
     set_images = ImageData("D:/Documents/Prepa/TIPE/bateauxPos.csv", transforms.Compose([transforms.ToTensor()]))
     imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 32, shuffle = True, pin_memory=True, num_workers=0)
     print('Images chargées.')
-
 
 class Net(nn.Module):
     def __init__(self):
@@ -125,24 +126,20 @@ class Net(nn.Module):
         nn.BatchNorm2d(128),
         nn.MaxPool2d(2, 2),
 
-        nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
-        nn.BatchNorm2d(128),
-        nn.MaxPool2d(2, 2),
+        #nn.Conv2d(128, 128, 3, 1, 1),
+        #nn.ReLU(),
+        #nn.BatchNorm2d(128),
+        #nn.MaxPool2d(2, 2),
 
-        nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
-        nn.BatchNorm2d(128),
-        nn.MaxPool2d(2, 2),
+        #nn.Conv2d(128, 128, 3, 1, 1),
+        #nn.ReLU(),
+        #nn.BatchNorm2d(128),
+        #nn.MaxPool2d(2, 2),
         )
 
         self.classifier = nn.Sequential(
-        nn.Linear(2048, 512),
-        nn.ReLU(),
-        nn.Linear(512, 10),
-        nn.ReLU(),
-        nn.Linear(10, 2),
-        #nn.Sigmoid()
+        nn.Linear(32768, 4),
+        nn.Sigmoid()
         )
 
     def forward(self, x):
@@ -154,10 +151,12 @@ class Net(nn.Module):
         return x
 
     def review(self, x):
-        return x.view(-1, 2048)
+        return x.view(-1, 32768)
 
-
-
+net = Net()
+net.to(device, non_blocking=True)
+criterion = nn.MSELoss()
+optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
 
 """
 for i in enumerate(imagesLoader):
@@ -167,6 +166,7 @@ I = M[1][0][0].to(device)
 J = net(I.unsqueeze(0))
 print(J.shape)
 """
+
 
 
 
@@ -275,23 +275,6 @@ def show3():
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-net = Net()
-
-net.load_state_dict(torch.load(pathModels + 'Tf1'))
-
-for param in net.parameters():
-    param.requires_grad = False
-
-net.classifier = nn.Sequential(
-nn.Linear(2048, 4),
-nn.Sigmoid()
-)
-
-
-
-net.to(device, non_blocking=True)
-criterion = nn.MSELoss()
-optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
 
 ##Affichage
 def corrigerStr(chaine):

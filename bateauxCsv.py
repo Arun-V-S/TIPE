@@ -4,7 +4,7 @@ import os
 
 ABSOLUTE = 'D:/Documents/Prepa/TIPE'
 
-pathBateaux = ABSOLUTE + "/data/MASATI-v2/detail"
+pathBateaux = ABSOLUTE + "/data/MASATI-v2/ship"
 pathMer = ABSOLUTE + "/data/MASATI-v2/water"
 
 NUMBERSHIP = 5 # 1027

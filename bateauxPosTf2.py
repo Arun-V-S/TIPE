@@ -19,6 +19,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 import time
 
+##Ici, on cherche juste un couple (x, y), pas une bounding box!
 
 Win = Tk()
 affichage = Frame(Win, width = 512, height = 512)
@@ -60,8 +61,12 @@ class ImageData(Dataset):
                 if ligne != []:
                     self.taille += 1
                     image, xmin, xmax, ymin, ymax = ligne[0].split(',')
+                    xmin = float(xmin) / 512
+                    xmax = float(xmax) / 512
+                    ymin = float(ymin) / 512
+                    ymax = float(ymax) / 512
                     self.images.append(self.transform(cv2.imread(image)).float())
-                    self.resultats.append(torch.Tensor([float(xmin) / 512, float(xmax) / 512, float(ymin) / 512, float(ymax) / 512]))
+                    self.resultats.append(torch.Tensor([(xmin + xmax) / 2, (ymin + ymax) / 2]))
 
     def __getitem__(self, index):
         """image = self.transform(cv2.imread(self.images[index])).float()"""
@@ -73,11 +78,11 @@ class ImageData(Dataset):
         return len(self.resultats)
 
 set_images = ImageData("D:/Documents/Prepa/TIPE/bateauxPos.csv", transforms.Compose([transforms.ToTensor(),]))
-imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 8, shuffle = True, pin_memory=True, num_workers=0)
+imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 16, shuffle = True, pin_memory=True, num_workers=0)
 print("Set de train chargé")
 
 set_images_val = ImageData("D:/Documents/Prepa/TIPE/bateauxPosVal.csv", transforms.Compose([transforms.ToTensor(),]))
-imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 8, shuffle = True, pin_memory=True, num_workers=0)
+imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 16, shuffle = True, pin_memory=True, num_workers=0)
 print("Set de validation chargé")
 
 def load():
@@ -203,8 +208,10 @@ def testPos():
                 xmax = res[0]
                 ymin = res[0]
                 ymax = res[0]
+                x = (xmin + xmax) / 2
+                y = (ymin + ymax) / 2
                 result = net(image).detach().cpu()[0]
-                res = ((abs(xmin - result[0])) + (abs(xmax - result[1])) + (abs(ymin - result[2])) + (abs(ymax - result[3]))) / 4
+                res = (abs(x - result[0]) + abs(y - result[1])) / 2
                 prec_Tr += res / NUMBER
                 i += 1
     with open(ABSOLUTE + '/bateauxPosVal.csv', 'r') as fichier:
@@ -217,9 +224,11 @@ def testPos():
                 xmax = float(xmin) / 512
                 ymin = float(xmin) / 512
                 ymax = float(xmin) / 512
+                x = (xmin + xmax) / 2
+                y = (ymin + ymax) / 2
                 image = set_images_val[i][0].unsqueeze(0).to(device)
                 result = net(image).detach().cpu()[0]
-                res = ((abs(xmin - result[0])) + (abs(xmax - result[1])) + (abs(ymin - result[2])) + (abs(ymax - result[3]))) / 4
+                res = (abs(x - result[0]) + abs(y - result[1])) / 2
                 prec_Val += res / (TOTAL - NUMBER)
                 i += 1
     return prec_Tr, prec_Val
@@ -282,8 +291,15 @@ net.load_state_dict(torch.load(pathModels + 'Tf1'))
 for param in net.parameters():
     param.requires_grad = False
 
+
 net.classifier = nn.Sequential(
-nn.Linear(2048, 4),
+nn.Linear(2048, 512),
+nn.ReLU(),
+nn.Linear(512, 512),
+nn.ReLU(),
+nn.Linear(512, 512),
+nn.ReLU(),
+nn.Linear(512, 2),
 nn.Sigmoid()
 )
 
@@ -291,7 +307,8 @@ nn.Sigmoid()
 
 net.to(device, non_blocking=True)
 criterion = nn.MSELoss()
-optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
+optimizer = optim.Adam(list(net.parameters()), lr=0.001, betas=(0.9, 0.999))
+#optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
 
 ##Affichage
 def corrigerStr(chaine):
@@ -326,13 +343,15 @@ def afficherPreview():
     init = init.to(device)
     init = init.unsqueeze(0)
     result = net(init).detach().cpu().numpy()
-    xmin, xmax, ymin, ymax = result[0]
+    x, y = result[0]
+    x = int(x * 512)
+    y = int(y * 512)
     imageCanvas.delete('all')
     image1 = Image.fromarray(initI)
     photo1 = ImageTk.PhotoImage(image1)
     imageCanvas.create_image(0, 0, anchor = NW, image = photo1)
     imageCanvas.image = photo1
-    imageCanvas.create_rectangle(int(xmin * 512), int(ymin * 512), int(xmax * 512), int(ymax * 512), outline = 'red', width = 3)
+    imageCanvas.create_oval(x - 2, y - 2, x + 2, y + 2, outline = 'red', width = 6)
 
 def gotrain():
     nombre = int(nombreEntry.get())

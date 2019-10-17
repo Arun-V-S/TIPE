@@ -19,7 +19,7 @@ from torchvision.utils import make_grid
 
 ABSOLUTE = 'D:/Documents/Prepa/TIPE'
 
-pathBateaux = ABSOLUTE + "/data/MASATI-v2/detail"
+pathBateaux = ABSOLUTE + "/data/MASATI-v2/ship"
 pathMer = ABSOLUTE + "/data/MASATI-v2/water"
 pathModels = ABSOLUTE + "/Models/"
 
@@ -43,7 +43,6 @@ class ImageData(Dataset):
                 if ligne != []:
                     image, resultat = ligne[0].split(',')
                     self.images.append(self.transform(cv2.imread(image)).float())
-                    """self.images.append(image)"""
                     resultat = int(resultat)
                     if resultat == 0:
                         self.resultats.append(0)
@@ -51,7 +50,6 @@ class ImageData(Dataset):
                         self.resultats.append(1)
 
     def __getitem__(self, index):
-        """image = self.transform(cv2.imread(self.images[index])).float()"""
         image = self.images[index]
         resultat = self.resultats[index]
         return image, resultat
@@ -125,7 +123,6 @@ class Net(nn.Module):
         nn.Linear(512, 10),
         nn.ReLU(),
         nn.Linear(10, 2),
-        nn.Softmax(dim = 1),
         )
 
     def forward(self, x):
@@ -144,14 +141,6 @@ net.to(device, non_blocking=True)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
 
-"""
-for i in enumerate(imagesLoader):
-    M = i
-
-I = M[1][0][0].to(device)
-J = net(I.unsqueeze(0))
-print(J.shape)
-"""
 
 
 def train(number):

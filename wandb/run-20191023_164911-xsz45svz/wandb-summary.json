@@ -1,0 +1,920 @@
+{
+    "graph_0": {
+        "_type": "graph",
+        "format": "torch",
+        "nodes": [
+            {
+                "name": "conv.0",
+                "id": 2468033039720,
+                "class_name": "Conv2d(3, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            16,
+                            3,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            16
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        16,
+                        512,
+                        512
+                    ]
+                ],
+                "num_parameters": [
+                    432,
+                    16
+                ]
+            },
+            {
+                "name": "conv.1",
+                "id": 2468030448136,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        16,
+                        512,
+                        512
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.2",
+                "id": 2468033037480,
+                "class_name": "BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            16
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            16
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        16,
+                        512,
+                        512
+                    ]
+                ],
+                "num_parameters": [
+                    16,
+                    16
+                ]
+            },
+            {
+                "name": "conv.3",
+                "id": 2468033039944,
+                "class_name": "Conv2d(16, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            64,
+                            16,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            64
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        64,
+                        512,
+                        512
+                    ]
+                ],
+                "num_parameters": [
+                    9216,
+                    64
+                ]
+            },
+            {
+                "name": "conv.4",
+                "id": 2468033180952,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        64,
+                        512,
+                        512
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.5",
+                "id": 2468033180896,
+                "class_name": "BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            64
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            64
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        64,
+                        512,
+                        512
+                    ]
+                ],
+                "num_parameters": [
+                    64,
+                    64
+                ]
+            },
+            {
+                "name": "conv.6",
+                "id": 2468033180392,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        64,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.7",
+                "id": 2468033181008,
+                "class_name": "Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            64,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": [
+                    73728,
+                    128
+                ]
+            },
+            {
+                "name": "conv.8",
+                "id": 2468033180336,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.9",
+                "id": 2468033180224,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.10",
+                "id": 2468033181064,
+                "class_name": "Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            128,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": [
+                    147456,
+                    128
+                ]
+            },
+            {
+                "name": "conv.11",
+                "id": 2468033180448,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.12",
+                "id": 2468033180504,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        256,
+                        256
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.13",
+                "id": 2468033181120,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        128,
+                        128
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.14",
+                "id": 2468033181176,
+                "class_name": "Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            128,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        128,
+                        128
+                    ]
+                ],
+                "num_parameters": [
+                    147456,
+                    128
+                ]
+            },
+            {
+                "name": "conv.15",
+                "id": 2468033181232,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        128,
+                        128
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.16",
+                "id": 2468033181288,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        128,
+                        128
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.17",
+                "id": 2468033181344,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        64,
+                        64
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.18",
+                "id": 2468033181400,
+                "class_name": "Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            128,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        64,
+                        64
+                    ]
+                ],
+                "num_parameters": [
+                    147456,
+                    128
+                ]
+            },
+            {
+                "name": "conv.19",
+                "id": 2468033181456,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        64,
+                        64
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.20",
+                "id": 2468033181512,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        64,
+                        64
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.21",
+                "id": 2468033181568,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        32,
+                        32
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.22",
+                "id": 2468033181624,
+                "class_name": "Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            128,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        32,
+                        32
+                    ]
+                ],
+                "num_parameters": [
+                    147456,
+                    128
+                ]
+            },
+            {
+                "name": "conv.23",
+                "id": 2468033181680,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        32,
+                        32
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.24",
+                "id": 2468033181736,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        32,
+                        32
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.25",
+                "id": 2468033181792,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        16,
+                        16
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.26",
+                "id": 2468033181848,
+                "class_name": "Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            128,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        16,
+                        16
+                    ]
+                ],
+                "num_parameters": [
+                    147456,
+                    128
+                ]
+            },
+            {
+                "name": "conv.27",
+                "id": 2468033181904,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        16,
+                        16
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.28",
+                "id": 2468033181960,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        16,
+                        16
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.29",
+                "id": 2468033182016,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        8,
+                        8
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.30",
+                "id": 2468033182072,
+                "class_name": "Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128,
+                            128,
+                            3,
+                            3
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        8,
+                        8
+                    ]
+                ],
+                "num_parameters": [
+                    147456,
+                    128
+                ]
+            },
+            {
+                "name": "conv.31",
+                "id": 2468033182128,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        8,
+                        8
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "conv.32",
+                "id": 2468033182184,
+                "class_name": "BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            128
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            128
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        8,
+                        8
+                    ]
+                ],
+                "num_parameters": [
+                    128,
+                    128
+                ]
+            },
+            {
+                "name": "conv.33",
+                "id": 2468033182240,
+                "class_name": "MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        128,
+                        4,
+                        4
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "classifier.0",
+                "id": 2468047691904,
+                "class_name": "Linear(in_features=2048, out_features=512, bias=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            512,
+                            2048
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            512
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        512
+                    ]
+                ],
+                "num_parameters": [
+                    1048576,
+                    512
+                ]
+            },
+            {
+                "name": "classifier.1",
+                "id": 2468047691848,
+                "class_name": "ReLU()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        512
+                    ]
+                ],
+                "num_parameters": []
+            },
+            {
+                "name": "classifier.2",
+                "id": 2468047692072,
+                "class_name": "Linear(in_features=512, out_features=2, bias=True)",
+                "parameters": [
+                    [
+                        "weight",
+                        [
+                            2,
+                            512
+                        ]
+                    ],
+                    [
+                        "bias",
+                        [
+                            2
+                        ]
+                    ]
+                ],
+                "output_shape": [
+                    [
+                        8,
+                        2
+                    ]
+                ],
+                "num_parameters": [
+                    1024,
+                    2
+                ]
+            },
+            {
+                "name": "classifier.3",
+                "id": 2468047692352,
+                "class_name": "Sigmoid()",
+                "parameters": [],
+                "output_shape": [
+                    [
+                        8,
+                        2
+                    ]
+                ],
+                "num_parameters": []
+            }
+        ],
+        "edges": []
+    }
+}

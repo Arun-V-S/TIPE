@@ -283,7 +283,9 @@ for param in net.parameters():
     param.requires_grad = False
 
 net.classifier = nn.Sequential(
-nn.Linear(2048, 4),
+nn.Linear(2048, 512),
+nn.ReLU(),
+nn.Linear(512, 4),
 nn.Sigmoid()
 )
 

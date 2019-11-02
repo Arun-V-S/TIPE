@@ -17,10 +17,12 @@ from torchvision.utils import make_grid
 from lxml import etree
 from tkinter import *
 from PIL import Image, ImageTk
+import wandb
 import time
 
+wandb.init(project = 'Bateaux')
 ##Ici, on cherche juste un couple (x, y), pas une bounding box!
-
+#Tf2-bon
 Win = Tk()
 affichage = Frame(Win, width = 512, height = 512)
 imageCanvas = Canvas(affichage, width = 512, height = 512)
@@ -37,12 +39,13 @@ pathBateaux = ABSOLUTE + "/data/MASATI-v2/ship"
 pathXml = ABSOLUTE + "/data/MASATI-v2/ship_labels"
 pathMer = ABSOLUTE + "/data/MASATI-v2/water"
 pathModels = ABSOLUTE + "/Models/"
+pathXml = ABSOLUTE + "/data/MASATI-v2/ship_labels"
 
 listeBateaux = os.listdir(pathBateaux)
 listeMer = os.listdir(pathMer)
 
-NUMBER = 750
-TOTAL = 800
+NUMBER = 250
+TOTAL = 300
 
 bateauxCsvPos.generateCsv(NUMBER, TOTAL)
 print(".csv généré")
@@ -78,11 +81,11 @@ class ImageData(Dataset):
         return len(self.resultats)
 
 set_images = ImageData("D:/Documents/Prepa/TIPE/bateauxPos.csv", transforms.Compose([transforms.ToTensor(),]))
-imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 16, shuffle = True, pin_memory=True, num_workers=0)
+imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 4, shuffle = True, pin_memory=True, num_workers=0)
 print("Set de train chargé")
 
 set_images_val = ImageData("D:/Documents/Prepa/TIPE/bateauxPosVal.csv", transforms.Compose([transforms.ToTensor(),]))
-imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 16, shuffle = True, pin_memory=True, num_workers=0)
+imagesLoader = torch.utils.data.DataLoader(set_images, batch_size = 8, shuffle = True, pin_memory=True, num_workers=0)
 print("Set de validation chargé")
 
 def load():
@@ -100,52 +103,52 @@ class Net(nn.Module):
 
         self.conv = nn.Sequential(
         nn.Conv2d(3, 16, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(16),
         nn.Conv2d(16, 64, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(64),
         nn.MaxPool2d(2, 2),
 
         nn.Conv2d(64, 128, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(128),
         nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
-        nn.BatchNorm2d(128),
-        nn.MaxPool2d(2, 2),
-
-        nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(128),
         nn.MaxPool2d(2, 2),
 
         nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(128),
         nn.MaxPool2d(2, 2),
 
         nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(128),
         nn.MaxPool2d(2, 2),
 
         nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(128),
         nn.MaxPool2d(2, 2),
 
         nn.Conv2d(128, 128, 3, 1, 1),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
+        nn.BatchNorm2d(128),
+        nn.MaxPool2d(2, 2),
+
+        nn.Conv2d(128, 128, 3, 1, 1),
+        nn.ReLU(inplace=False),
         nn.BatchNorm2d(128),
         nn.MaxPool2d(2, 2),
         )
 
         self.classifier = nn.Sequential(
         nn.Linear(2048, 512),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.Linear(512, 10),
-        nn.ReLU(),
+        nn.ReLU(inplace=False),
         nn.Linear(10, 2),
         #nn.Sigmoid()
         )
@@ -174,7 +177,6 @@ print(J.shape)
 """
 
 
-
 def train(number):
     for epoch in range(number):
         running_loss = 0.0
@@ -187,9 +189,10 @@ def train(number):
             optimizer.step()
             running_loss += loss.item()
         print('Epoch : ' + str(epoch) + ' loss : ' + str(running_loss))
+        wandb.log({'epoch' : epoch, 'loss' : running_loss})
         net.epochs += 1
-        afficherPreview()
-        imageCanvas.update()
+        #afficherPreview()
+        #imageCanvas.update()
 
 
 def testPos():
@@ -288,16 +291,12 @@ net = Net()
 
 net.load_state_dict(torch.load(pathModels + 'Tf1'))
 
+
 for param in net.parameters():
     param.requires_grad = False
 
-
 net.classifier = nn.Sequential(
 nn.Linear(2048, 512),
-nn.ReLU(),
-nn.Linear(512, 512),
-nn.ReLU(),
-nn.Linear(512, 512),
 nn.ReLU(),
 nn.Linear(512, 2),
 nn.Sigmoid()
@@ -305,10 +304,14 @@ nn.Sigmoid()
 
 
 
+
+params = [p for p in net.parameters()]
 net.to(device, non_blocking=True)
-criterion = nn.MSELoss()
-optimizer = optim.Adam(list(net.parameters()), lr=0.001, betas=(0.9, 0.999))
-#optimizer = optim.SGD(list(net.parameters()), lr = 0.001, momentum = 0.9)
+criterion = nn.L1Loss()
+optimizer = optim.Adam(params, lr=0.001, betas=(0.9, 0.999))
+#optimizer = optim.SGD(params, lr = 0.005, momentum = 0.9, weight_decay = 1e-6)
+
+wandb.watch(net, log="all")
 
 ##Affichage
 def corrigerStr(chaine):
@@ -336,6 +339,15 @@ def decr():
 def afficherPreview():
     global imageIndice
     indiceStr = corrigerStr(imageIndice.get())
+    nom = 's' + indiceStr + '.xml'
+    tree = etree.parse(pathXml + '/' + nom)
+    xmin = tree.xpath('/annotation/object/bndbox/xmin')[0].text
+    xmax = tree.xpath('/annotation/object/bndbox/xmax')[0].text
+    ymin = tree.xpath('/annotation/object/bndbox/ymin')[0].text
+    ymax = tree.xpath('/annotation/object/bndbox/ymax')[0].text
+    x0 = (int(xmin) + int(xmax)) // 2
+    y0 = (int(ymin) + int(ymax)) // 2
+
     imageI = Image.open(pathBateaux + '/s' + indiceStr + '.png')
     initI = np.array(imageI)
     init = initI.transpose((2, 0, 1))
@@ -351,6 +363,7 @@ def afficherPreview():
     photo1 = ImageTk.PhotoImage(image1)
     imageCanvas.create_image(0, 0, anchor = NW, image = photo1)
     imageCanvas.image = photo1
+    imageCanvas.create_oval(x0 - 2, y0 - 2, x0 + 2, y0 + 2, outline = 'green', width = 6)
     imageCanvas.create_oval(x - 2, y - 2, x + 2, y + 2, outline = 'red', width = 6)
 
 def gotrain():
@@ -383,5 +396,8 @@ imageCanvas.pack(side = TOP)
 affichage.pack(side = TOP)
 buttonFrame.pack(side = TOP)
 
+print(count_parameters(net))
 #loadModel('Pos2')
-Win.mainloop()
+#Win.mainloop()
+
+train(100)

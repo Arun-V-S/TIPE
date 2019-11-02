@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import copy
 
 plt.ion()
 
@@ -24,7 +25,7 @@ class Fonction:
     def test(self, data, expect):
         erreur = 0
         for i in range(len(expect)):
-            erreur = (expect[i] - self.evaluate(data[i])) ** 2
+            erreur += (expect[i] - self.evaluate(data[i])) ** 2
         self.erreur = erreur / len(expect)
 
 
@@ -46,14 +47,13 @@ class Batch:
     def evolve(self, keep, mutationRate, mutationEffect, exposantProbability):
         fonctions = self.fonctions[:keep]
         for _ in range(keep, self.fonctionsNumber):
-            fonctions.append(Fonction(self.ecartType))
-        self.fonctions = fonctions
+            fonctions.append(copy.deepcopy(self.fonctions[np.random.randint(0, keep)]))
 
-        for i in range(0, keep):
-            fonction = self.fonctions[i]
+        for i in range(keep, self.fonctionsNumber):
+            fonction = fonctions[i]
             for j in range(0, len(fonction.data)):
                 if random.random() <= mutationRate:
-                    fonction.data[j] += random.gauss(0, self.ecartType) * mutationEffect * fonction.erreur * 1 / (j + 1)
+                    fonction.data[j] += random.gauss(0, self.ecartType) * mutationEffect
             if random.random() <= exposantProbability:
                 fonction.data.append(random.gauss(0, self.ecartType))
         self.fonctions = fonctions
@@ -82,8 +82,8 @@ class Batch:
         plt.show()
         plt.pause(0.01)
 
-DATAIN = [i for i in range(10)]
-EXPECT = list(np.random.randint(0, 20, 10))
+DATAIN = [i for i in range(5)]
+EXPECT = list(np.random.randint(0, 2, 5))
 
 B = Batch(1000, 0.1)
-B.evolveEpochs(2500, 250, 0.5, 0.5, 0.1, DATAIN, EXPECT)
+B.evolveEpochs(2500, 500, 0.5, 1, 0.25, DATAIN, EXPECT)

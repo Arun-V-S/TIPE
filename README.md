@@ -36,15 +36,27 @@ L'utilisation d'une bibliothèque, Pytorch en l'occurrence, qui se fonde sur des
 
 1 Réseau de détection
 ----------------------
+Le premier modèle entraîné, composé de 7 couches de convolution et de 2 couches entièrement connectées, est un simple __classifier__ entraîné pour différencier les images satellites comportant un bateau de celles n'en comportant pas. 
 
 
 2 Réseau de localisation
 -------------------------
+Le deuxième modèle a une fonction de localisation, ie. il doit renvoyer, lorsqu'une image comportant un bateau lui est soumis, les coordonnées d'une __bounding box__ encadrant ce bateau. 
 
 
 3 Plus avancé : génération d'images
-------------------------------------
+-----------------------------------
+Avec une structure différente, un __GAN__ (Generative Adversarial Network) ou un __Autoencoder__, il est possible de générer, à partir d'exemples réels, des images satellites réalistes. 
 
 
 IV Réseaux de neurones et évolution génétique 
 =============================================
+Les algorithmes d'évolution génétiques sont une branche de l'__optimisation stochastique__ de modèles, dans le cas où une démarche déterministe serait trop complexe, voire impossible. Ici, il s'agit non seulement de déterminer un ensemble de poids et biais satisfaisant une condition de précision, mais aussi de déterminer une __architecture__ de réseau qui la satisfasse. 
+
+1 Une première approche
+---
+Pour commencer, il semble cohérent de laisser à l'algorithme une liberté totale, concernant l'architecture des réseaux de neurones produits et testés. Pourtant, de façon empirique, les algorithmes ne convergent pas, principalement à cause de la présence d'__actions récursives__ dans l'architecture, tandis que notre domaine d'étude se restreint à des problèmes statiques, c'est à dire ne dépendant pas du temps. 
+
+2 Certaines conditions 
+---
+En ajoutant des __couches virtuelles__ dans l'architecture des réseaux, on peut s'assurer qu'aucune situation récursive ne se présente. Ce faisant, la recherche de solution est restreinte à des __solutions statiques__, ce qui correspond à notre problème. Expérimentalement, cette fois-ci, l'algorithme d'évolution converge vers un réseaux satisfaisant pour notre problème (relations logiques et reconnaissance de caractères). 
